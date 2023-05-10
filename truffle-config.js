@@ -48,17 +48,24 @@ module.exports = {
       timeoutBlocks: 200,
       confirmations: 2,
     },
-    scroll_alpha_testnet: {
-      provider: () => new HDWalletProvider(privateKey, `https://alpha-rpc.scroll.io/l2`),
-      network_id: "*",
-      network_id: 5,
+    arb_testnet: {
+      provider: () => new HDWalletProvider(privateKey, `https://goerli-rollup.arbitrum.io/rpc`),
+      network_id: 421613,
       skipDryRun: true,
       production: true,
       gasPrice: 128,
       timeoutBlocks: 200,
       confirmations: 2,
     },
-    
+    bsc_testnet: {
+      provider: () => new HDWalletProvider(privateKey, `https://data-seed-prebsc-1-s1.binance.org:8545/`),
+      network_id: 97,
+      skipDryRun: true,
+      production: true,
+      gasPrice: 128,
+      timeoutBlocks: 200,
+      confirmations: 2,
+    },
   },
 
   // Set default mocha options here, use special reporters etc.

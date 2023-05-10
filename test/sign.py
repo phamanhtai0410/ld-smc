@@ -2,22 +2,23 @@ import os
 
 from web3 import Web3
 from pydash import get
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
 _privateKeySigner = "98102796d0dfe116f5af6e9a3c10dc38d316f6c98b3ded8d008b962c7d126460"
-_user_address = "0xE4A482E15Bd8D5cAEf13B2f0EfdE7Bf15B737929"
+_user_address = "0xaDF66a56f668Bd18C598af93207330273E62ccA8"
 
-_contract_address = "0xB7557b1EF53a235a7f5e206CCF725dB1a2ceB030"
+# arb
+_contract_address = "0xBA6BCCb229E49a540c6c59fF92236a2E7a4608e5"
 
 ETHER_GOERLI = 5
 ARB_TEST = 421613
 
 _data = {
     "chain_network": ARB_TEST,
-    "amount": 10000000000000, 
-    "deadline": 1688964735
+    "amount": 1000, 
+    "deadline": 1688964733
 }
 # getChainID(),
 # tx.origin,
@@ -40,10 +41,7 @@ def generate_signature():
             get(_data, "chain_network"),
             _user_address,
             _contract_address,
-            _nft_collection_address,
-            get(_data, "discount"),
-            False,
-            get(_data, "nft_type"), # NFT type
+            "0x7aa60a6c17d345aad75f74e9887c29c37a2d113797e06d5c9b4ed619b6cb0e78",
             get(_data, "amount"), # amount
             get(_data, "deadline")
         ]
