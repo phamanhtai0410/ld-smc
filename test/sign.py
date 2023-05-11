@@ -10,14 +10,17 @@ _privateKeySigner = "98102796d0dfe116f5af6e9a3c10dc38d316f6c98b3ded8d008b962c7d1
 _user_address = "0xaDF66a56f668Bd18C598af93207330273E62ccA8"
 
 # arb
-_contract_address = "0xBA6BCCb229E49a540c6c59fF92236a2E7a4608e5"
+# _contract_address = "0xBA6BCCb229E49a540c6c59fF92236a2E7a4608e5"
+
+# goerli
+_contract_address = "0x9F55fCe03779C06f0421d026dcCE0D8d6fF8a086"
 
 ETHER_GOERLI = 5
 ARB_TEST = 421613
 
 _data = {
-    "chain_network": ARB_TEST,
-    "amount": 1000, 
+    "chain_network": ETHER_GOERLI,
+    "amount": 999, 
     "deadline": 1688964733
 }
 # getChainID(),

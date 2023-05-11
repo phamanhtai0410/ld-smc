@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./ILadysToken.sol";
 
 
-contract LadysBridge is 
+contract MemBridge is 
     Ownable
 {
     // LadysToken contract
@@ -47,14 +47,23 @@ contract LadysBridge is
     }
     
     /**
+     *      Modifier check msg.sender must is wallet address
+     */
+    modifier notContract() {
+        require(!_isContract(msg.sender), "Contract not allowed");
+        require(msg.sender == tx.origin, "Proxy contract not allowed");
+        _;
+    }
+
+    /**
      *      Bridge Token
      */
     function bridge(
         uint256 _amount,
         uint256 _toChainID
-    ) external {
+    ) external notContract {
         require(chainIDSupport[_toChainID], "ChainID current is not supported");
-        require(token.balanceOf(msg.sender) > _amount, "User need hold enough Token");
+        require(token.balanceOf(msg.sender) >= _amount, "User need hold enough Token");
         if (getChainID() == chainIdEther) {
             token.transferFrom(msg.sender, pool, _amount);
         } else {
@@ -70,7 +79,7 @@ contract LadysBridge is
         string memory _txHash,
         uint256 _amount,
         Proof memory _proof
-    ) external payable {
+    ) external payable notContract {
         address _to = msg.sender;
         require(
             verifySignature(
@@ -169,5 +178,16 @@ contract LadysBridge is
      */
     function balance() external view returns (uint256) {
         return token.balanceOf(address(this));
+    }
+
+    /**
+     * @notice Checks if address is a contract
+     */
+    function _isContract(address addr) internal view returns (bool) {
+        uint256 size;
+        assembly {
+            size := extcodesize(addr)
+        }
+        return size > 0;
     }
 }

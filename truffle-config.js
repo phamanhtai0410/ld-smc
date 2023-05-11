@@ -22,7 +22,7 @@ const HDWalletProvider = require('@truffle/hdwallet-provider');
 const PrivateKeyProvider = require("truffle-privatekey-provider");
 
 const fs = require('fs');
-const mnemonic = fs.readFileSync(".secret").toString().trim();
+// const mnemonic = fs.readFileSync(".secret").toString().trim();
 const privateKey = fs.readFileSync(".private_key").toString().trim();
 console.log("Private Key = ", privateKey);
 
@@ -40,22 +40,22 @@ module.exports = {
 
   networks: {
     goerli_testnet: {
-      provider: () => new PrivateKeyProvider(privateKey, `https://goerli.infura.io/v3/`),
+      provider: () => new PrivateKeyProvider(privateKey, `https://mainnet.infura.io/v3/87cd043b3ab54e61b62c73382f9b21a1`),
       network_id: 5,
-      skipDryRun: true,
-      production: true,
-      gasPrice: 128,
-      timeoutBlocks: 200,
-      confirmations: 2,
+      // skipDryRun: true,
+      // production: true,
+      // gasPrice: 128,
+      // timeoutBlocks: 200,
+      // confirmations: 2,
     },
     arb_testnet: {
       provider: () => new HDWalletProvider(privateKey, `https://goerli-rollup.arbitrum.io/rpc`),
       network_id: 421613,
-      skipDryRun: true,
-      production: true,
-      gasPrice: 128,
-      timeoutBlocks: 200,
-      confirmations: 2,
+      // skipDryRun: true,
+      // production: true,
+      // gasPrice: 128,
+      // timeoutBlocks: 200,
+      // confirmations: 2,
     },
     bsc_testnet: {
       provider: () => new HDWalletProvider(privateKey, `https://data-seed-prebsc-1-s1.binance.org:8545/`),

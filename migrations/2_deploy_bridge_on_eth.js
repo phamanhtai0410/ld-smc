@@ -1,0 +1,101 @@
+const console = require("console");
+const fs = require("fs");
+
+var LadysTokenETH = artifacts.require("LadysTokenETH");
+var MemBridge = artifacts.require("MemBridge");
+var BridgePool = artifacts.require("BridgePool");
+
+
+function wf(name, address) {
+    fs.appendFileSync('address.txt', name + "=" + address);
+    fs.appendFileSync('address.txt', "\r\n");
+}
+
+const deployments = {
+    deploy_pool: true,
+    deploy_bridge: true,
+
+    is_testnet: true,
+    set_chain_ids: true,
+
+    authorize_for_bridge: true,
+    transfer_ladays_token_to_pool: true
+}
+
+module.exports = async function (deployer, network, accounts) {
+    let account = deployer.options?.from || accounts[0];
+    console.log("deployer = ", account);
+    require('dotenv').config();
+    
+    
+
+        
+    var _ladysTokenETH = await LadysTokenETH.at(process.env.LadysTokenETH);
+    
+
+    /**
+     *      1. Deploy BridgePool
+     */
+    if (deployments.deploy_pool) {
+        await deployer.deploy(
+            BridgePool,
+            _ladysTokenETH.address,
+            process.env.ownerPool
+        );
+        var _ladysPool = await BridgePool.deployed();
+        wf("BridgePool", _ladysPool.address);
+    } else {
+        var _ladysPool = await BridgePool.at(process.env.BridgePool);
+    }
+
+    /**
+     *      2. Deploy MemBridge
+     */
+    if (deployments.deploy_bridge) {
+        await deployer.deploy(
+            MemBridge,
+            _ladysTokenETH.address,
+            process.env.SIGNER,
+            _ladysPool.address
+        );
+        var _ladyBridge = await MemBridge.deployed();
+        wf("MemBridge", _ladyBridge.address);
+    } else {
+        var _ladyBridge = await MemBridge.at(process.env.MemBridge);
+    }
+
+    /**
+     *      3. Set chainID support
+     */
+    if (deployments.is_testnet) {
+        if (deployments.set_chain_ids) {
+            await _ladyBridge.setChainIdEther(5); // 5 is ChainID Goerli
+            console.log("set chain id ether success ");
+            await _ladyBridge.setChainIdSupport(421613, true); // set support bridge to ARB Tesnet
+            console.log("set support chainid ether success");
+        }
+        
+    }
+    else  {
+        if (deployments.set_chain_ids) {
+            // await _ladyBridge.setChainIdEther(1); // 1 is ChainID ETH
+            console.log("set chain id ether success");
+            // await _ladyBridge.setChainIdSupport(42161, true); // set support bridge to ARB
+            console.log("set support chainid ether success");
+        }
+    }
+
+    /**
+     *      4. Authorize for contract MemBridge withdraw token in contract BridgePool
+     */
+    if (deployments.authorize_for_bridge) {
+        await _ladysPool.authorizeBridge(_ladyBridge.address, "100000000000000000000000000000"); // 100 B 
+    }
+
+    /**
+     *      5. Transfer token Ladys from Owner wallet to  BridgePool
+     */
+    if (deployments.transfer_ladays_token_to_pool) {
+        await _ladysTokenETH.transfer(_ladysPool.address, "1000000000000000000000000");
+    }
+}

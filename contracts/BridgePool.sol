@@ -4,7 +4,7 @@ pragma solidity ^0.8.2;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract LadysBridgePool is Ownable {
+contract BridgePool is Ownable {
     // address token
     IERC20 public token;
 
@@ -17,10 +17,10 @@ contract LadysBridgePool is Ownable {
     }
     
     /**
-     *  Authorize for LadysBridge withdraw Token From BridgePool
+     *  Authorize allow MemBridge withdraw Token From BridgePool
      **/
-    function authorizeBridge(address _ladysBridgeContract, uint256 _amount) external onlyOwner {
-        token.approve(_ladysBridgeContract, _amount);
+    function authorizeBridge(address _memBridgeContract, uint256 _amount) external onlyOwner {
+        token.approve(_memBridgeContract, _amount);
     }
 
     /**

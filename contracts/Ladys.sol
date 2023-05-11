@@ -2,14 +2,12 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 
 contract LadysToken is 
-    Ownable,
-    AccessControl,
-    ERC20
+    ERC20,
+    AccessControl
 {
     bool public limited;
     uint256 public maxHoldingAmount;
@@ -26,11 +24,11 @@ contract LadysToken is
         _setupRole(BURNER_ROLE, msg.sender);
     }
 
-    function blacklist(address _address, bool _isBlacklisting) external onlyOwner {
+    function blacklist(address _address, bool _isBlacklisting) external onlyRole(DEFAULT_ADMIN_ROLE) {
         blacklists[_address] = _isBlacklisting;
     }
 
-    function setRule(bool _limited, address _uniswapV2Pair, uint256 _maxHoldingAmount, uint256 _minHoldingAmount) external onlyOwner {
+    function setRule(bool _limited, address _uniswapV2Pair, uint256 _maxHoldingAmount, uint256 _minHoldingAmount) external onlyRole(DEFAULT_ADMIN_ROLE) {
         limited = _limited;
         uniswapV2Pair = _uniswapV2Pair;
         maxHoldingAmount = _maxHoldingAmount;
