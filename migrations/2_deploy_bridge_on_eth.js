@@ -89,13 +89,6 @@ module.exports = async function (deployer, network, accounts) {
      *      4. Authorize for contract MemBridge withdraw token in contract BridgePool
      */
     if (deployments.authorize_for_bridge) {
-        await _ladysPool.authorizeBridge(_ladyBridge.address, "100000000000000000000000000000"); // 100 B 
-    }
-
-    /**
-     *      5. Transfer token Ladys from Owner wallet to  BridgePool
-     */
-    if (deployments.transfer_ladays_token_to_pool) {
-        await _ladysTokenETH.transfer(_ladysPool.address, "1000000000000000000000000");
+        await _ladysPool.authorizeBridge(_ladyBridge.address); // max uint256 = 115792089237316195423570985008687907853269984665640564039457584007913129639935
     }
 }

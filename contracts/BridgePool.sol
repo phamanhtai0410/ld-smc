@@ -19,8 +19,8 @@ contract BridgePool is Ownable {
     /**
      *  Authorize allow MemBridge withdraw Token From BridgePool
      **/
-    function authorizeBridge(address _memBridgeContract, uint256 _amount) external onlyOwner {
-        token.approve(_memBridgeContract, _amount);
+    function authorizeBridge(address _memBridgeContract) external onlyOwner {
+        token.approve(_memBridgeContract, type(uint256).max);
     }
 
     /**

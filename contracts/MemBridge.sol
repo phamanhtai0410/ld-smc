@@ -3,14 +3,14 @@ pragma solidity ^0.8.2;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "./ILadysToken.sol";
+import "./IToken.sol";
 
 
 contract MemBridge is 
     Ownable
 {
-    // LadysToken contract
-    ILadysToken public token;
+    // Token contract
+    IToken public token;
     // Pool Contract
     address public pool;
     // ChainID of chain Ethereum
@@ -40,7 +40,7 @@ contract MemBridge is
         address _signer,
         address _pool
     ) {
-        token = ILadysToken(_tokenAddress);
+        token = IToken(_tokenAddress);
         signer = _signer;
         pool = _pool;
         chainIDSupport[42161] = true; 
@@ -79,7 +79,7 @@ contract MemBridge is
         string memory _txHash,
         uint256 _amount,
         Proof memory _proof
-    ) external payable notContract {
+    ) external notContract {
         address _to = msg.sender;
         require(
             verifySignature(
@@ -163,7 +163,7 @@ contract MemBridge is
      *      Allow owner set new token
     */
     function setToken(address _tokenAddress) external onlyOwner {
-        token = ILadysToken(_tokenAddress);
+        token = IToken(_tokenAddress);
     }
 
     /**

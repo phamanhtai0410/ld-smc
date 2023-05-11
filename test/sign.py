@@ -7,20 +7,26 @@ from pydash import get
 # load_dotenv()
 
 _privateKeySigner = "98102796d0dfe116f5af6e9a3c10dc38d316f6c98b3ded8d008b962c7d126460"
-_user_address = "0xaDF66a56f668Bd18C598af93207330273E62ccA8"
+_user_address = "0xE4A482E15Bd8D5cAEf13B2f0EfdE7Bf15B737929"
 
-# arb
-# _contract_address = "0xBA6BCCb229E49a540c6c59fF92236a2E7a4608e5"
+_contract_address = "0x9590440dbF366d7058cc7EFdE87eDE5C6f87E8dA"
 
-# goerli
-_contract_address = "0x9F55fCe03779C06f0421d026dcCE0D8d6fF8a086"
+# ARB
+# LadysToken=0xA3375db815d30f2f0da391c6a94D5c872e939bC9
+# BridgePool=0xF5945449b27532BCe9519Bc032a6cb73Fe09d2E7
+# MemBridge=0x95c18Acb2737802528Abe7be546De3ef39FE48B5
+
+
+# # Ether
+# BridgePool=0x3739d05719AEdD25209C373B449D61B22FB77fA0
+# MemBridge=0x9590440dbF366d7058cc7EFdE87eDE5C6f87E8dA
 
 ETHER_GOERLI = 5
 ARB_TEST = 421613
 
 _data = {
     "chain_network": ETHER_GOERLI,
-    "amount": 999, 
+    "amount": 1000, 
     "deadline": 1688964733
 }
 # getChainID(),
