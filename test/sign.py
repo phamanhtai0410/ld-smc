@@ -25,12 +25,9 @@ _privateKeySigner5 = "7a7271b40429a8c77b4a2d254734ed9753f1c0cfa0763f403fa8ab6140
 
 _user_address = "0xE4A482E15Bd8D5cAEf13B2f0EfdE7Bf15B737929"
 
-_contract_address = "0x0C07e28b5e98db065C61EF6b8985D05eEBBF576d"
+_contract_address = "0x63084Efb344B68ecf35AAE1Ea0E7D10DD09740A0"
 
-# ARB
-# LadysToken=0x1C1E3445c79a2187a06b5ecE967E142d1A9231d3
-# BridgePool=0xf886a73065a9cCAB36aCA567Db8ae675c380de32
-# MemBridge=0x0C07e28b5e98db065C61EF6b8985D05eEBBF576d
+
 
 
 # # Ether
@@ -55,20 +52,20 @@ def generate_signature(_privateKey):
     _w3 = Web3()
     _encode = _w3.codec.encode_abi(
         [
-            'uint256', # chain
+            'uint256', # To chainID
+            'uint256', # From chainID
             'address', # _user_address
             'address', # contract bridge
             'string', # transaction hash
-            'uint256', # amount
-            'uint256' # deadline
+            'uint256' # amount
         ], 
         [
             get(_data, "chain_network"),
+            5,
             _user_address,
             _contract_address,
             "0x7aa60a6c17d345aad75f74e9887c29c37a2d113797e06d5c9b4ed619b6cb0e7c",
-            get(_data, "amount"), # amount
-            get(_data, "deadline")
+            get(_data, "amount")
         ]
     )
     
@@ -81,11 +78,11 @@ def generate_signature(_privateKey):
     return _signed_message.signature.hex()
 
 
-print("* Signature = ", generate_signature(_privateKeySigner))
-print("* Signature2 = ", generate_signature(_privateKeySigner2))
-print("* Signature3 = ", generate_signature(_privateKeySigner3))
-print("* Signature4 = ", generate_signature(_privateKeySigner4))
-print("* Signature5 = ", generate_signature(_privateKeySigner5))
+print(f'Signature = "{generate_signature(_privateKeySigner)}"')
+print(f'Signature2 = "{generate_signature(_privateKeySigner2)}"')
+print(f'Signature3 = "{generate_signature(_privateKeySigner3)}"')
+print(f'Signature4 = "{generate_signature(_privateKeySigner4)}"')
+print(f'Signature5 = "{generate_signature(_privateKeySigner5)}"')
 
 
 # base = 0x5a0b849136aa2b8b822342934bad251c191c4cb1bc57770af734e7e868ac03df70c17ee5659b97121b02dfc8ab3786b7940adb07a00269d187a495af2a7766821c

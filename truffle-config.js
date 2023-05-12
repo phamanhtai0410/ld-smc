@@ -55,7 +55,7 @@ module.exports = {
       // production: true,
       // gasPrice: 128,
       // timeoutBlocks: 200,
-      // confirmations: 2,
+      confirmations: 2,
     },
     bsc_testnet: {
       provider: () => new HDWalletProvider(privateKey, `https://data-seed-prebsc-1-s1.binance.org:8545/`),

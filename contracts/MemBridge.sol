@@ -101,6 +101,7 @@ contract MemBridge is
      *      Claim token then bridge
      */
     function claim(
+        uint256 _fromChainID,
         string memory _txHash,
         uint256 _amount,
         Proof[] memory _proofs
@@ -108,6 +109,7 @@ contract MemBridge is
         address _to = msg.sender;
         require(
             verifySignature(
+                _fromChainID,
                 _txHash,
                 _amount,
                 _proofs
@@ -129,6 +131,7 @@ contract MemBridge is
      *      Verify Signature
      */
     function verifySignature(
+        uint256 _fromChainID,
         string memory _txHash,
         uint256 _amount,
         Proof[] memory _proofs
@@ -140,6 +143,7 @@ contract MemBridge is
             bytes32 _hashSignature = keccak256(
                 abi.encode(
                     getChainID(),
+                    _fromChainID,
                     tx.origin,
                     address(this),
                     _txHash,
@@ -158,10 +162,10 @@ contract MemBridge is
             _countSignature ++;
         }
         require(
-            isUsedSignatures[getChainID()][_txHash] == 0,
+            isUsedSignatures[_fromChainID][_txHash] == 0,
             "The signature has already been used"
         );
-        isUsedSignatures[getChainID()][_txHash] = 1;
+        isUsedSignatures[_fromChainID][_txHash] = 1;
         return signatureThreshold <= _countSignature;
     }
 

@@ -1,11 +1,34 @@
 const { ethers } = require('ethers');
 
-function split_sig() {
-    var _sig = "0xa97201cf1deb5fd192ff58a23dba845b374929eab408052fe1a5564f5ae1a6594a9b8ae1535ee4487b3a4486b9fbbed1aa1c1793e028b45074b4b6f07c1f43f01c";
+
+
+Signature = "0xa96d042c15958bb93a00c955f9cca133ac37a4299dfc23793f4770ef28eee1e868149805c3669c4a7b7c2b8c7df52e80cec858a3af90dbed3c86f8f8c510894c1b"
+Signature2 = "0xd7b13ccdb2a55ff672c7035bd1c597faaf39cb2ed214c140c906630d0088217842ab0c8b91547bcf86d1e16a8491db2881bedf4989a89eb3bcc0d7264796fd7a1c"
+Signature3 = "0x3c78b5a3337182287d7cb1fd623db47b2162411c6d03a9b4571ad69286f282644b1f9979f32f343fc78272e5f2629b805dc3fdfa78b2d10585910e31e78cb25b1b"
+Signature4 = "0xfcccc8c245e027576cb284c9f5cd6076d19dc6e32cffbd26e8f89dc985a8755e411d80fd0e6ec00d80390a1f824b40e41acf864d9a62ec626374b3af0d30b22b1c"
+Signature5 = "0x34d6b6d0ff9fd6ee5632645087f3b1713dd4f1599b88d143e57dca3bd858b08b49319c2f6fd1e0a124484d1cb9bb2bf9850f471207d47ebb5261fa1807ef4aa01b"
+
+
+function split_sig(_sig) {
+    
     const { v, r , s } = ethers.utils.splitSignature(_sig);
-    console.log(`[${v}, "${r}", "${s}", 1688964733]`);
+    console.log(`[${v}, "${r}", "${s}"]`);
 }
 
-split_sig();
+let _sig1 = split_sig(Signature);
+let _sig2 = split_sig(Signature2);
+let _sig3 = split_sig(Signature3);
+let _sig4 = split_sig(Signature4);
+let _sig5 = split_sig(Signature5);
+
+
+// console.log("arr: " , arr)
 // [28, "0x5378fb195fc690e72cac2dd72d736caf71053fcfd46b2a4ab687b13755f96764", "0x654c80b158fc6e0c8cf475a21225c2d554e0fd65bba1eaccfc2499e1b0d1976d", 1669148853]
 
+[
+    [27, "0xa96d042c15958bb93a00c955f9cca133ac37a4299dfc23793f4770ef28eee1e8", "0x68149805c3669c4a7b7c2b8c7df52e80cec858a3af90dbed3c86f8f8c510894c"],
+    [28, "0xd7b13ccdb2a55ff672c7035bd1c597faaf39cb2ed214c140c906630d00882178", "0x42ab0c8b91547bcf86d1e16a8491db2881bedf4989a89eb3bcc0d7264796fd7a"],
+    [27, "0x3c78b5a3337182287d7cb1fd623db47b2162411c6d03a9b4571ad69286f28264", "0x4b1f9979f32f343fc78272e5f2629b805dc3fdfa78b2d10585910e31e78cb25b"],
+    [28, "0xfcccc8c245e027576cb284c9f5cd6076d19dc6e32cffbd26e8f89dc985a8755e", "0x411d80fd0e6ec00d80390a1f824b40e41acf864d9a62ec626374b3af0d30b22b"],
+    [27, "0x34d6b6d0ff9fd6ee5632645087f3b1713dd4f1599b88d143e57dca3bd858b08b", "0x49319c2f6fd1e0a124484d1cb9bb2bf9850f471207d47ebb5261fa1807ef4aa0"]
+]
