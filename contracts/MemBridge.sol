@@ -136,6 +136,7 @@ contract MemBridge is
             "The signature has already been used"
         );
         isUsedSignatures[_txHash] = 1;
+        
         address signatory = ecrecover(_hashSignature, _proof.v, _proof.r, _proof.s);
         return signatory == _signer && _proof.deadline >= block.timestamp;
     }
