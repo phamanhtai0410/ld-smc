@@ -67,10 +67,18 @@ module.exports = async function (deployer, network, accounts) {
      *      3. Deploy MemBridge
      */
     if (deployments.deploy_bridge) {
+        _signers = [
+            '0x8BC0073828fCFFebaCFBa058e47ec276A15fecfB',
+            '0x70fb92cC9389fF80E51868067f0E2f47Cbd6C63F',
+            '0x9CAdcdA4752E8929D815945B4F4aBa0B0Cec05cF',
+            '0x63B9C930A19638AD4b72dfec64ab1b34b1bdd9E9',
+            '0x5421FCeDccA8023393C74a1038c34D23293c6384'
+          ];
+        
         await deployer.deploy(
             MemBridge,
             _ladysToken.address,
-            process.env.SIGNERS,
+            _signers,
             _bridgePool.address,
             3
         );

@@ -222,8 +222,12 @@ contract MemBridge is
      *      Allow owner set new signers
     */
     function setSigners(address[] memory _signers) external onlyRole(DEFAULT_ADMIN_ROLE) {
-
-        
+        for (uint256 i = 0; i < signers.length(); i++) {
+            signers.remove(signers.at(i));
+        }
+        for (uint256 i = 0; i < _signers.length; i++) {
+            signers.add(_signers[i]);
+        }
     }
 
     /**
