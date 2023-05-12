@@ -1,7 +1,7 @@
 const { ethers } = require('ethers');
 
 function split_sig() {
-    var _sig = "0x2d77952f686d8cc058c74e670078ac9e11f99a04c91fd8245d8d235db599295125e4e5d23f2fd82c6d4ab9445e715c7f9e5fc09f1987be1303a52252fb7843911b";
+    var _sig = "0xa97201cf1deb5fd192ff58a23dba845b374929eab408052fe1a5564f5ae1a6594a9b8ae1535ee4487b3a4486b9fbbed1aa1c1793e028b45074b4b6f07c1f43f01c";
     const { v, r , s } = ethers.utils.splitSignature(_sig);
     console.log(`[${v}, "${r}", "${s}", 1688964733]`);
 }

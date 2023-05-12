@@ -9,12 +9,12 @@ from pydash import get
 _privateKeySigner = "98102796d0dfe116f5af6e9a3c10dc38d316f6c98b3ded8d008b962c7d126460"
 _user_address = "0xE4A482E15Bd8D5cAEf13B2f0EfdE7Bf15B737929"
 
-_contract_address = "0x9590440dbF366d7058cc7EFdE87eDE5C6f87E8dA"
+_contract_address = "0x0C07e28b5e98db065C61EF6b8985D05eEBBF576d"
 
 # ARB
-# LadysToken=0xA3375db815d30f2f0da391c6a94D5c872e939bC9
-# BridgePool=0xF5945449b27532BCe9519Bc032a6cb73Fe09d2E7
-# MemBridge=0x95c18Acb2737802528Abe7be546De3ef39FE48B5
+# LadysToken=0x1C1E3445c79a2187a06b5ecE967E142d1A9231d3
+# BridgePool=0xf886a73065a9cCAB36aCA567Db8ae675c380de32
+# MemBridge=0x0C07e28b5e98db065C61EF6b8985D05eEBBF576d
 
 
 # # Ether
@@ -25,8 +25,8 @@ ETHER_GOERLI = 5
 ARB_TEST = 421613
 
 _data = {
-    "chain_network": ETHER_GOERLI,
-    "amount": 1000, 
+    "chain_network": ARB_TEST,
+    "amount": 100, 
     "deadline": 1688964733
 }
 # getChainID(),
@@ -50,7 +50,7 @@ def generate_signature():
             get(_data, "chain_network"),
             _user_address,
             _contract_address,
-            "0x7aa60a6c17d345aad75f74e9887c29c37a2d113797e06d5c9b4ed619b6cb0e78",
+            "0x7aa60a6c17d345aad75f74e9887c29c37a2d113797e06d5c9b4ed619b6cb0e7c",
             get(_data, "amount"), # amount
             get(_data, "deadline")
         ]

@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.2;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
 import "./IToken.sol";
 
 
 contract MemBridge is 
-    Ownable
+    AccessControl
 {
     // Token contract
     IToken public token;
@@ -15,10 +15,14 @@ contract MemBridge is
     address public pool;
     // ChainID of chain Ethereum
     uint256 public chainIdEther = 1;
+    // pause claim token on chain Ethereum
+    bool public pauseETH;
+    // pause claim token Wrap
+    bool public pauseWrap;
     // Check ChainID support
     mapping(uint256 => bool) public chainIDSupport;
     // Mapping variable to check the existing of one signature (make sure one sig can only be used just one time)
-    mapping(bytes32 => uint8) public isUsedSignatures;
+    mapping(string => uint8) public isUsedSignatures;
 
     // Signer for claim with signature 
     address private signer;
@@ -35,6 +39,8 @@ contract MemBridge is
     event Bridge(uint256 amount, uint256 toChainID, address wallet);
     event Claim(uint256 amount, address walletReceive, string callbackData);
 
+    bytes32 public constant PAUSE_ROLE = keccak256("PAUSE_ROLE");
+
     constructor(
         address _tokenAddress, 
         address _signer,
@@ -44,6 +50,9 @@ contract MemBridge is
         signer = _signer;
         pool = _pool;
         chainIDSupport[42161] = true; 
+
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _setupRole(PAUSE_ROLE, msg.sender);
     }
     
     /**
@@ -91,9 +100,11 @@ contract MemBridge is
             "Invalid Signature"
         );
         if (getChainID() == chainIdEther) {
+            require(!pauseETH, "Claim is disable");
             token.transferFrom(pool, _to, _amount);
             
         } else {
+            require(!pauseWrap, "Claim is disable");
             token.mint(_to, _amount);
         }
         emit Claim(_amount, _to, _txHash);
@@ -119,10 +130,10 @@ contract MemBridge is
             )
         );
         require(
-            isUsedSignatures[_hashSignature] == 0,
+            isUsedSignatures[_txHash] == 0,
             "The signature has already been used"
         );
-        isUsedSignatures[_hashSignature] = 1;
+        isUsedSignatures[_txHash] = 1;
         address signatory = ecrecover(_hashSignature, _proof.v, _proof.r, _proof.s);
         return signatory == _signer && _proof.deadline >= block.timestamp;
     }
@@ -141,35 +152,44 @@ contract MemBridge is
     /**
      *      Allow owner set new chainID Ether
     */
-    function setChainIdEther(uint256 _chainIdEther) external onlyOwner {
+
+    function setPauseETH(bool _flag) external onlyRole(PAUSE_ROLE) {
+        pauseETH = _flag;
+    }
+
+    function setPauseWrap(bool _flag) external onlyRole(PAUSE_ROLE) {
+        pauseWrap = _flag;
+    }
+
+    function setChainIdEther(uint256 _chainIdEther) external onlyRole(DEFAULT_ADMIN_ROLE) {
         chainIdEther = _chainIdEther;
     }
 
     /**
      *      Allow owner update ChainID's Support
     */
-    function setChainIdSupport(uint256 _chainId, bool _flag) external onlyOwner {
+    function setChainIdSupport(uint256 _chainId, bool _flag) external onlyRole(DEFAULT_ADMIN_ROLE) {
         chainIDSupport[_chainId] = _flag;
     }
 
     /**
      *      Allow owner set new signer
     */
-    function setSigner(address _signer) external onlyOwner {
+    function setSigner(address _signer) external onlyRole(DEFAULT_ADMIN_ROLE) {
         signer = _signer;
     }
 
     /**
      *      Allow owner set new token
     */
-    function setToken(address _tokenAddress) external onlyOwner {
+    function setToken(address _tokenAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
         token = IToken(_tokenAddress);
     }
 
     /**
      *      Allow owner withdraw token in contract
      */
-    function withdraw(uint256 _amount) external onlyOwner {
+    function withdraw(uint256 _amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
         token.transfer(msg.sender, _amount);
     }
 

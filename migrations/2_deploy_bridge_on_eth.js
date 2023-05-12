@@ -86,7 +86,7 @@ module.exports = async function (deployer, network, accounts) {
     }
 
     /**
-     *      4. Authorize for contract MemBridge withdraw token in contract BridgePool
+     *      4. Authorize for contract MemBridge withdraw token in contract BridgePool with amount max uint256
      */
     if (deployments.authorize_for_bridge) {
         await _ladysPool.authorizeBridge(_ladyBridge.address); // max uint256 = 115792089237316195423570985008687907853269984665640564039457584007913129639935
