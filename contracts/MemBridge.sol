@@ -189,13 +189,6 @@ contract MemBridge is
     }
 
     /**
-     *      Allow owner withdraw token in contract
-     */
-    function withdraw(uint256 _amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        token.transfer(msg.sender, _amount);
-    }
-
-    /**
      *      Get balance token in contract
      */
     function balance() external view returns (uint256) {
