@@ -88,10 +88,10 @@ contract MemBridge is
         require(chainIDSupport[_toChainID], "ChainID current is not supported");
         require(token.balanceOf(msg.sender) >= _amount, "User need hold enough Token");
         if (getChainID() == chainIdEther) {
-            require(!pauseETH, "Claim is disable");
+            require(!pauseETH, "Transfer to bridge is disabled");
             token.transferFrom(msg.sender, pool, _amount);
         } else {
-            require(!pauseWrap, "Claim is disable");
+            require(!pauseWrap, "Transfer to bridge is disabled");
             token.burn(msg.sender, _amount);
         }
         emit Bridge(_amount, _toChainID, msg.sender);
@@ -242,13 +242,6 @@ contract MemBridge is
     */
     function setToken(address _tokenAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
         token = IToken(_tokenAddress);
-    }
-
-    /**
-     *      Get balance token in contract
-     */
-    function balance() external view returns (uint256) {
-        return token.balanceOf(address(this));
     }
 
     /**

@@ -8,9 +8,6 @@ contract BridgePool is Ownable {
     // address token
     IERC20 public token;
 
-    event Deposit(uint256 _amount);
-    event AdminWithdraw(uint256 _amount);
-
     constructor(address _tokenAddress, address _owner) {
         token = IERC20(_tokenAddress);
         transferOwnership(_owner);
