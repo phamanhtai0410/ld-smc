@@ -15,9 +15,9 @@ contract MemBridge is
     address public pool;
     // ChainID of chain Ethereum
     uint256 public chainIdEther = 1;
-    // pause claim token on chain Ethereum
+    // Bridge & Claim is disable on chain Ethereum
     bool public pauseETH;
-    // pause claim token Wrap
+    // Bridge & Claim is disable on chain token Wrap
     bool public pauseWrap;
     // Check ChainID support
     mapping(uint256 => bool) public chainIDSupport;
@@ -74,8 +74,10 @@ contract MemBridge is
         require(chainIDSupport[_toChainID], "ChainID current is not supported");
         require(token.balanceOf(msg.sender) >= _amount, "User need hold enough Token");
         if (getChainID() == chainIdEther) {
+            require(!pauseETH, "Claim is disable");
             token.transferFrom(msg.sender, pool, _amount);
         } else {
+            require(!pauseWrap, "Claim is disable");
             token.burn(msg.sender, _amount);
         }
         emit Bridge(_amount, _toChainID, msg.sender);
