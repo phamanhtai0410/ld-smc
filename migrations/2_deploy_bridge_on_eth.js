@@ -55,7 +55,7 @@ module.exports = async function (deployer, network, accounts) {
         await deployer.deploy(
             MemBridge,
             _ladysTokenETH.address,
-            process.env.SIGNER,
+            process.env.SIGNERS,
             _ladysPool.address
         );
         var _ladyBridge = await MemBridge.deployed();

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.2;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 import "./IToken.sol";
 
@@ -9,6 +10,8 @@ import "./IToken.sol";
 contract MemBridge is 
     AccessControl
 {
+    using EnumerableSet for EnumerableSet.AddressSet;
+
     // Token contract
     IToken public token;
     // Pool Contract
@@ -22,17 +25,18 @@ contract MemBridge is
     // Check ChainID support
     mapping(uint256 => bool) public chainIDSupport;
     // Mapping variable to check the existing of one signature (make sure one sig can only be used just one time)
-    mapping(string => uint8) public isUsedSignatures;
+    mapping(uint256 => mapping(string => uint8)) public isUsedSignatures;
 
-    // Signer for claim with signature 
-    address private signer;
-
+    // Signers for claim with signature 
+    EnumerableSet.AddressSet private signers;
+    // Threshold verify signature;
+    uint256 public signatureThreshold;
+    
     // Proof Signature
     struct Proof {
         uint8 v;
         bytes32 r;
         bytes32 s;
-        uint256 deadline;
     }
 
     // Events
@@ -43,14 +47,24 @@ contract MemBridge is
 
     constructor(
         address _tokenAddress, 
-        address _signer,
-        address _pool
+        address[] memory _signers, 
+        address _pool,
+        uint256 _threshold
     ) {
+        require(_signers.length > 0, "At least one signer is required");
+        require(_threshold > 0 && _threshold <= _signers.length, "Invalid threshold");
+        for (uint256 i = 0; i < _signers.length; i++) {
+            address _signer = _signers[i];
+            require(_signer != address(0), "Invalid signer address");
+            signers.add(_signer);
+        }
+        signatureThreshold = _threshold;
         token = IToken(_tokenAddress);
-        signer = _signer;
+        // signer = _signer;
         pool = _pool;
         chainIDSupport[42161] = true; 
 
+        
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _setupRole(PAUSE_ROLE, msg.sender);
     }
@@ -89,15 +103,14 @@ contract MemBridge is
     function claim(
         string memory _txHash,
         uint256 _amount,
-        Proof memory _proof
+        Proof[] memory _proofs
     ) external notContract {
         address _to = msg.sender;
         require(
             verifySignature(
-                signer,
                 _txHash,
                 _amount,
-                _proof
+                _proofs
             ),
             "Invalid Signature"
         );
@@ -116,29 +129,55 @@ contract MemBridge is
      *      Verify Signature
      */
     function verifySignature(
-        address _signer,
         string memory _txHash,
         uint256 _amount,
-        Proof memory _proof
-    ) private returns (bool) {
-        bytes32 _hashSignature = keccak256(
-            abi.encode(
-                getChainID(),
-                tx.origin,
-                address(this),
-                _txHash,
-                _amount,
-                _proof.deadline
-            )
-        );
+        Proof[] memory _proofs
+    ) internal returns (bool) {
+        uint256 _countSignature;
+        address[] memory _signatories = new address[](_proofs.length);
+        for (uint256 i = 0; i < _proofs.length; i++) {
+            Proof memory _proof = _proofs[i];
+            bytes32 _hashSignature = keccak256(
+                abi.encode(
+                    getChainID(),
+                    tx.origin,
+                    address(this),
+                    _txHash,
+                    _amount
+                )
+            );
+            address _signatory = ecrecover(_hashSignature, _proof.v, _proof.r, _proof.s);
+            require(
+                !checkDuplicateSignatory(_signatories, _signatory), 
+                "Duplicated Signatory"
+            );
+            if (!signers.contains(_signatory)) {
+                return false;
+            }
+            _signatories[i] = _signatory;
+            _countSignature ++;
+        }
         require(
-            isUsedSignatures[_txHash] == 0,
+            isUsedSignatures[getChainID()][_txHash] == 0,
             "The signature has already been used"
         );
-        isUsedSignatures[_txHash] = 1;
-        
-        address signatory = ecrecover(_hashSignature, _proof.v, _proof.r, _proof.s);
-        return signatory == _signer && _proof.deadline >= block.timestamp;
+        isUsedSignatures[getChainID()][_txHash] = 1;
+        return signatureThreshold <= _countSignature;
+    }
+
+    /**
+     *      Function allows checking duplicate signatories
+    */
+    function checkDuplicateSignatory(
+        address[] memory _signatories, 
+        address _signatory
+    ) internal pure returns (bool) {
+        for (uint256 i = 0; i < _signatories.length; i++) {
+            if (_signatory == _signatories[i]) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -176,10 +215,18 @@ contract MemBridge is
     }
 
     /**
-     *      Allow owner set new signer
+     *      Allow owner set new signers
     */
-    function setSigner(address _signer) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        signer = _signer;
+    function setSigners(address[] memory _signers) external onlyRole(DEFAULT_ADMIN_ROLE) {
+
+        
+    }
+
+    /**
+     *      Allow owner set new signatureThreshold
+    */
+    function setThreshold(uint256 _signatureThreshold) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        signatureThreshold = _signatureThreshold;
     }
 
     /**
