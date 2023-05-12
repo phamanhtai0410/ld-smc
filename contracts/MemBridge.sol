@@ -24,8 +24,8 @@ contract MemBridge is
     bool public pauseWrap;
     // Check ChainID support
     mapping(uint256 => bool) public chainIDSupport;
-    // Mapping variable to check the existing of one signature (make sure one sig can only be used just one time)
-    mapping(uint256 => mapping(string => uint8)) public isUsedSignatures;
+    // Mapping variable to check the existing of one transaction hash (make sure one sig can only be used just one time)
+    mapping(uint256 => mapping(string => uint8)) public isUsedTxHash;
 
     // Signers for claim with signature 
     EnumerableSet.AddressSet private signers;
@@ -162,10 +162,10 @@ contract MemBridge is
             _countSignature ++;
         }
         require(
-            isUsedSignatures[_fromChainID][_txHash] == 0,
-            "The signature has already been used"
+            isUsedTxHash[_fromChainID][_txHash] == 0,
+            "The transaction hash has already been used"
         );
-        isUsedSignatures[_fromChainID][_txHash] = 1;
+        isUsedTxHash[_fromChainID][_txHash] = 1;
         return signatureThreshold <= _countSignature;
     }
 
