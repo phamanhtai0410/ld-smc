@@ -25,7 +25,7 @@ _privateKeySigner5 = "7a7271b40429a8c77b4a2d254734ed9753f1c0cfa0763f403fa8ab6140
 
 _user_address = "0xE4A482E15Bd8D5cAEf13B2f0EfdE7Bf15B737929"
 
-_contract_address = "0x63084Efb344B68ecf35AAE1Ea0E7D10DD09740A0"
+_contract_address = "0x4a9e712625eB2090327D194Fceaf52C6c81DE971"
 
 
 
@@ -38,16 +38,19 @@ ETHER_GOERLI = 5
 ARB_TEST = 421613
 
 _data = {
+    "from_chain_id": ETHER_GOERLI,
     "chain_network": ARB_TEST,
+    "tx_hash": "0x11e2121be164f72f17fc1a4ff52e1ea4c64776a4bac7fb1de3a55c2ab46c3a2b",
     "amount": 100, 
     "deadline": 1688964733
 }
 # getChainID(),
+# fromChainID,
 # tx.origin,
 # address(this),
 # _txHash,
 # _amount,
-# _proof.deadline
+
 def generate_signature(_privateKey):
     _w3 = Web3()
     _encode = _w3.codec.encode_abi(
@@ -61,10 +64,10 @@ def generate_signature(_privateKey):
         ], 
         [
             get(_data, "chain_network"),
-            5,
+            get(_data, "from_chain_id"),
             _user_address,
             _contract_address,
-            "0x7aa60a6c17d345aad75f74e9887c29c37a2d113797e06d5c9b4ed619b6cb0e7c",
+            get(_data, "tx_hash"),
             get(_data, "amount")
         ]
     )
@@ -78,11 +81,11 @@ def generate_signature(_privateKey):
     return _signed_message.signature.hex()
 
 
-print(f'Signature = "{generate_signature(_privateKeySigner)}"')
-print(f'Signature2 = "{generate_signature(_privateKeySigner2)}"')
-print(f'Signature3 = "{generate_signature(_privateKeySigner3)}"')
-print(f'Signature4 = "{generate_signature(_privateKeySigner4)}"')
-print(f'Signature5 = "{generate_signature(_privateKeySigner5)}"')
+print(f'Signature = "{generate_signature(_privateKeySigner)}";')
+print(f'Signature2 = "{generate_signature(_privateKeySigner2)}";')
+print(f'Signature3 = "{generate_signature(_privateKeySigner3)}";')
+print(f'Signature4 = "{generate_signature(_privateKeySigner4)}";')
+print(f'Signature5 = "{generate_signature(_privateKeySigner5)}";')
 
 
 # base = 0x5a0b849136aa2b8b822342934bad251c191c4cb1bc57770af734e7e868ac03df70c17ee5659b97121b02dfc8ab3786b7940adb07a00269d187a495af2a7766821c
