@@ -14,8 +14,8 @@ function wf(name, address) {
 
 const deployments = {
     stake: true,
-    switch_pool: true,
-    unstake: true,
+    switch_pool: false,
+    unstake: false,
     claim: false
 }
 
@@ -33,8 +33,9 @@ module.exports = async function (deployer, network, accounts) {
         var _amount = 10 ** 18;
         var _campaignId = 1;
         var _poolId = 1;
+        await token.approve(staking.address, _amount.toString());
         await staking.stake(
-            _amount,
+            _amount.toString(),
             _campaignId,
             _poolId
         );

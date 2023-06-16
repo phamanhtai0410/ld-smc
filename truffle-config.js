@@ -26,6 +26,12 @@ const fs = require('fs');
 const privateKey = fs.readFileSync(".private_key").toString().trim();
 console.log("Private Key = ", privateKey);
 
+const privateKeyUser1 = fs.readFileSync(".private_key_user_1").toString().trim();
+const privateKeyUser2 = fs.readFileSync(".private_key_user_2").toString().trim();
+const privateKeyUser3 = fs.readFileSync(".private_key_user_3").toString().trim();
+
+
+
 
 module.exports = {
   /**
@@ -39,6 +45,26 @@ module.exports = {
    */
 
   networks: {
+    ganache: {
+      host: '127.0.0.1', // Localhost (default: none)
+      port: 8545, // Standard Ethereum port (default: none)
+      network_id: '*', // Any network (default: none)
+      skipDryRun: true,
+      production: true,
+      gasPrice: 7656250000,
+      timeoutBlocks: 200,
+      from: '0x016164edb8247dA3A4543F8f8A697DF8aF795b55',
+    },
+    ganache2: {
+      host: '127.0.0.1', // Localhost (default: none)
+      port: 8545, // Standard Ethereum port (default: none)
+      network_id: '*', // Any network (default: none)
+      skipDryRun: true,
+      production: true,
+      gasPrice: 7656250000,
+      timeoutBlocks: 200,
+      from: '0x5C82Ce5F770d0eCCa83DfEC20e6da9a5324f9f5D',
+    },
     goerli_testnet: {
       provider: () => new HDWalletProvider(
         privateKey,
@@ -52,6 +78,48 @@ module.exports = {
       // gasPrice: 128,
       // timeoutBlocks: 200,
       confirmations: 2,
+    },
+    goerli_testnet_user_1: {
+      provider: () => new HDWalletProvider(
+        privateKeyUser1,
+        // `https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161`
+        `https://goerli.infura.io/v3/87cd043b3ab54e61b62c73382f9b21a1`
+      ),
+      network_id: 5,
+      gasPrice: 47000000000,
+      // skipDryRun: true,
+      // production: true,
+      // gasPrice: 128,
+      // timeoutBlocks: 200,
+      // confirmations: 2,
+    },
+    goerli_testnet_user_2: {
+      provider: () => new HDWalletProvider(
+        privateKeyUser2,
+        // `https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161`
+        `https://goerli.infura.io/v3/87cd043b3ab54e61b62c73382f9b21a1`
+      ),
+      network_id: 5,
+      gasPrice: 47000000000,
+      // skipDryRun: true,
+      // production: true,
+      // gasPrice: 128,
+      // timeoutBlocks: 200,
+      // confirmations: 2,
+    },
+    goerli_testnet_user_3: {
+      provider: () => new HDWalletProvider(
+        privateKeyUser3,
+        // `https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161`
+        `https://goerli.infura.io/v3/87cd043b3ab54e61b62c73382f9b21a1`
+      ),
+      network_id: 5,
+      gasPrice: 47000000000,
+      // skipDryRun: true,
+      // production: true,
+      // gasPrice: 128,
+      // timeoutBlocks: 200,
+      // confirmations: 2,
     },
     arb_testnet: {
       provider: () => new HDWalletProvider(privateKey, `https://goerli-rollup.arbitrum.io/rpc`),

@@ -13,10 +13,10 @@ function wf(name, address) {
 }
 
 const deployments = {
-    deploy_test_token: true,
-    deploy_staking: true,
-    set_up_new_campaign: true,
-    set_result: false,
+    deploy_test_token: false,
+    deploy_staking: false,
+    set_up_new_campaign: false,
+    set_result: true,
     emergency_pause: false
 }
 
@@ -32,9 +32,11 @@ module.exports = async function (deployer, network, accounts) {
         await deployer.deploy(AnimeToken);
         var token = await AnimeToken.deployed();
         wf("Token", token.address);
+        await token.transfer(process.env.USER_WALLET, (100 * 10 ** 18).toString()); // Transfer to user wallet for test
     } else {
         var token = await AnimeToken.at(process.env.Token);
     }
+    console.log("- Done deploy test token");
 
     /**
      *      Deploy Staking contract
@@ -50,16 +52,17 @@ module.exports = async function (deployer, network, accounts) {
     } else {
         var staking = await Staking.at(process.env.Staking);
     }
+    console.log("- Done deploy staking");
 
     /**
      *      Set up a campaign
      */
     if (deployments.set_up_new_campaign) {
         var _campaignId = 1;
-        var _startStaking = 1686891600;
-        var _endStaking = 1686892200;
-        var _startClaiming = 1686892800;
-        var _endClaiming = 1686893400;
+        var _startStaking = 1686903840;
+        var _endStaking = 1686907800;
+        var _startClaiming = 1686908400;
+        var _endClaiming = 1686909600;
         var _totalPool = 3;
         await staking.setupCampaign(
             _campaignId, 
@@ -69,7 +72,9 @@ module.exports = async function (deployer, network, accounts) {
             _endClaiming,
             _totalPool
         );
+        console.log("- Done set up new campaign");
     }
+
 
     
     /**
@@ -82,6 +87,7 @@ module.exports = async function (deployer, network, accounts) {
             _campaignId,
             _winningPool
         );
+        console.log("- Done set result for campaign");
     }
 
 
@@ -89,7 +95,9 @@ module.exports = async function (deployer, network, accounts) {
      *      Pause the staking (just for emergency case)
      */
     if (deployments.emergency_pause) {
-        await staking.setPausable(true);
+        await staking.setPausable(false);
+        await staking.setActiveCampaign(1);
+        console.log("- Done set pausable = false and set active campaign is 1");
     }
 
     

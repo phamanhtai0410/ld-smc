@@ -14,6 +14,7 @@ contract Staking is Ownable {
 
     // Pausable flag
     bool public pausable;
+
     // Active campaign
     uint256 public activeCampaign;
 
@@ -148,10 +149,10 @@ contract Staking is Ownable {
         userStakedAmount[msg.sender][_campaignId][_fromPoolId] = 0;
         campaignDetails[_campaignId].poolStakedAmount[
             _fromPoolId
-        ] += _switchAmount;
+        ] -= _switchAmount;
         campaignDetails[_campaignId].poolStakedAmount[
             _toPoolId
-        ] -= _switchAmount;
+        ] += _switchAmount;
         emit SwitchPool(_campaignId, _fromPoolId, _toPoolId);
     }
 
@@ -186,6 +187,10 @@ contract Staking is Ownable {
     ) external onlyOwner {
         require(_winningPool != 0, "Invalid Pool");
         campaignDetails[_campaignId].result = _winningPool;
+    }
+
+    function setActiveCampaign(uint256 _campaignId) external onlyOwner {
+        activeCampaign = _campaignId;
     }
 
     function claimRewardAndStakeAmount(
