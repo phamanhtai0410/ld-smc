@@ -35,6 +35,7 @@ contract Staking is Ownable {
         uint256 startClaiming;
         uint256 endClaiming;
         uint256 totalStaked;
+        uint256 totalPenalty;
         uint256 totalPool;
         mapping(uint256 => uint256) poolStakedAmount;
         uint256 result;
@@ -167,6 +168,14 @@ contract Staking is Ownable {
             _poolId
         ] * 50) / 100;
         require(_amountToWithdraw > 0, "User has no staked token");
+        campaignDetails[_campaignId].totalPenalty += _amountToWithdraw;
+        campaignDetails[_campaignId].totalStaked -= userStakedAmount[
+            msg.sender
+        ][_campaignId][_poolId];
+        campaignDetails[_campaignId].poolStakedAmount[
+            _poolId
+        ] -= userStakedAmount[msg.sender][_campaignId][_poolId];
+        userStakedAmount[msg.sender][_campaignId][_poolId] = 0;
         token.transfer(msg.sender, _amountToWithdraw);
         emit Unstake(_campaignId, _poolId);
     }
@@ -183,20 +192,49 @@ contract Staking is Ownable {
         uint256 _campaignId
     ) external availableToClaim(_campaignId) {
         if (campaignDetails[_campaignId].result == 0) {
-            // TODO: Handle for no result case
+            uint256 _userStaked = 0;
+            for (
+                uint256 i = 1;
+                i <= campaignDetails[_campaignId].totalPool;
+                i++
+            ) {
+                _userStaked += userStakedAmount[msg.sender][_campaignId][i];
+                campaignDetails[_campaignId].poolStakedAmount[
+                    i
+                ] -= userStakedAmount[msg.sender][_campaignId][i];
+                userStakedAmount[msg.sender][_campaignId][i] = 0;
+            }
+            campaignDetails[_campaignId].totalPenalty += _userStaked / 2;
+            campaignDetails[_campaignId].totalStaked -= _userStaked;
+            token.transfer(msg.sender, _userStaked / 2);
         } else {
             uint256 _result = campaignDetails[_campaignId].result;
             uint256 _userStaked = userStakedAmount[msg.sender][_campaignId][
                 _result
             ];
+
             require(_userStaked > 0, "User stake no token in the winning pool");
+
             uint256 _total = campaignDetails[_campaignId].totalStaked;
             uint256 _totalWinningPool = campaignDetails[_campaignId]
                 .poolStakedAmount[_result];
             uint256 _reward = (_userStaked / _totalWinningPool) *
                 (_total - _totalWinningPool);
+
+            userStakedAmount[msg.sender][_campaignId][_result] = 0;
+
             token.transfer(msg.sender, _userStaked + _reward);
             emit Claim(_campaignId, msg.sender, _userStaked + _reward);
         }
+    }
+
+    function withdrawPenalty(uint256 _campaignId) external onlyOwner {
+        require(
+            campaignDetails[_campaignId].totalPenalty > 0,
+            "No penalty for this campaign"
+        );
+        uint256 _availablePenalty = campaignDetails[_campaignId].totalPenalty;
+        campaignDetails[_campaignId].totalPenalty = 0;
+        token.transfer(msg.sender, _availablePenalty);
     }
 }
