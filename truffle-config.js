@@ -40,13 +40,18 @@ module.exports = {
 
   networks: {
     goerli_testnet: {
-      provider: () => new PrivateKeyProvider(privateKey, `https://mainnet.infura.io/v3/87cd043b3ab54e61b62c73382f9b21a1`),
+      provider: () => new HDWalletProvider(
+        privateKey,
+        // `https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161`
+        `https://goerli.infura.io/v3/87cd043b3ab54e61b62c73382f9b21a1`
+      ),
       network_id: 5,
+      gasPrice: 47000000000,
       // skipDryRun: true,
       // production: true,
       // gasPrice: 128,
       // timeoutBlocks: 200,
-      // confirmations: 2,
+      confirmations: 2,
     },
     arb_testnet: {
       provider: () => new HDWalletProvider(privateKey, `https://goerli-rollup.arbitrum.io/rpc`),
