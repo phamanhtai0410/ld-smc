@@ -146,7 +146,10 @@ module.exports = {
     // timeout: 100000
   },
 
-  plugins: ["truffle-contract-size"],
+  plugins: ["truffle-contract-size", "truffle-plugin-verify"],
+  api_keys: {
+    etherscan: 'F36ABHNTET3AQ8QJXAW9J5K3CXXRINVER2'
+  },
 
   // Configure your compilers
   compilers: {

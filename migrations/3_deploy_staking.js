@@ -14,9 +14,9 @@ function wf(name, address) {
 
 const deployments = {
     deploy_test_token: false,
-    deploy_staking: false,
-    set_up_new_campaign: false,
-    set_result: true,
+    deploy_staking: true,
+    set_up_new_campaign: true,
+    set_result: false,
     emergency_pause: false
 }
 
@@ -45,7 +45,8 @@ module.exports = async function (deployer, network, accounts) {
         await deployer.deploy(
             Staking,
             token.address,
-            process.env.OWNER
+            process.env.OWNER,
+            500
         );
         var staking = await Staking.deployed();
         wf("Staking", staking.address)
@@ -59,10 +60,10 @@ module.exports = async function (deployer, network, accounts) {
      */
     if (deployments.set_up_new_campaign) {
         var _campaignId = 1;
-        var _startStaking = 1686903840;
-        var _endStaking = 1686907800;
-        var _startClaiming = 1686908400;
-        var _endClaiming = 1686909600;
+        var _startStaking = 1686985449;
+        var _endStaking = 1686999848;
+        var _startClaiming = 1687003448;
+        var _endClaiming = 1687025048;
         var _totalPool = 3;
         await staking.setupCampaign(
             _campaignId, 
