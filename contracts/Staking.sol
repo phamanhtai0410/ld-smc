@@ -218,7 +218,7 @@ contract Staking is Ownable {
                 ] -= userStakedAmount[msg.sender][_campaignId][i];
                 userStakedAmount[msg.sender][_campaignId][i] = 0;
             }
-            campaignDetails[_campaignId].totalPenalty += _userStaked / 2;
+            campaignDetails[_campaignId].totalPenalty += _userStaked * penaltyRate / DENOMINATOR;
             campaignDetails[_campaignId].totalStaked -= _userStaked;
             token.transfer(
                 msg.sender,
