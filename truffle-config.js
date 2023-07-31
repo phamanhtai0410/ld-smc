@@ -66,6 +66,17 @@ module.exports = {
       timeoutBlocks: 200,
       confirmations: 2,
     },
+
+    base_testnet: {
+      provider: () => new HDWalletProvider(privateKey, `https://goerli.base.org`),
+      network_id: 84531,
+      // skipDryRun: true,
+      // production: true,
+      // gasPrice: 128,
+      // timeoutBlocks: 200,
+      // confirmations: 2,
+    },
+
   },
 
   // Set default mocha options here, use special reporters etc.
